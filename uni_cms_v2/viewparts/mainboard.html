@@ -1,0 +1,222 @@
+{if $pointer eq 'head'}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>优理707代码工坊|WWW.UNI707.COM</title>
+	 <link href="{$root}css/bootstrap.min.css" rel="stylesheet">
+    <link href="{$root}css/business-casual.css" rel="stylesheet">
+</head>
+<body>
+    <div class="brand"><img src="{$root}images/logo.jpg" alt=""></div>
+    <div class="address-bar">致力于开发和研究商业化计算机网络应用程序</div>
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{$root}">优理707代码工坊</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+					<li>
+							<a href="{$root}">首页</a>
+						</li>
+					{foreach from=$nav item=val}
+						{if $val.lv eq "1"}
+						<li>
+							<a href="{$root}site_dir/{$val.id}.html">{$val.title}</a>
+						</li>
+						{/if}
+					{/foreach}
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+{/if}
+{if $pointer eq 'foot'}
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <p>Copyright &copy; 2016 UNI707.COM <br><small>本站内容版权归本站作者所有,未经授权不得以任何商业销售形式进行复制。</small> <br><small>湘ICP备16002056号</small></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="{$root}js/jquery.min.js"></script>
+    <script src="{$root}js/bootstrap.min.js"></script>
+{literal}
+    <script>
+    $('.carousel').carousel({
+        interval: 5000 //changes the speed
+    })
+    </script>
+{/literal}
+</body>
+</html>
+{/if}
+
+{if $pointer eq 'index'}
+
+<div class="container">
+
+        <div class="row">
+            <div class="box">
+                <div class="col-lg-12 text-center">
+                    <div id="carousel-example-generic" class="carousel slide">
+                        <ol class="carousel-indicators hidden-xs">
+                            <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="item active">
+                                <img class="img-responsive img-full" src="{$root}images/slide-1.jpg" alt="">
+                            </div>
+                        </div>
+                        <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+                            <span class="icon-prev"></span>
+                        </a>
+                        <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+                            <span class="icon-next"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{/if}
+
+{if $pointer eq 'site_list'}
+
+<div class="container">
+
+        <div class="row">
+            <div class="box">
+
+				{foreach from= $data.list item = val}
+				
+                <div class="col-lg-12">
+				<div class="col-lg-5">  
+					<img class="img-responsive img-border img-full" src="{$my_img}" alt="">
+				</div>
+				<div class="col-lg-7">
+					<h2>{$val.title}
+                        <br>
+                        <small>{$val.add_time}</small>
+                    </h2>
+                    <p>{$val.description}</p>
+                    <a href="{$root}site_page/{$val.id}.html" class="btn btn-default btn-xm">更多信息..</a>
+				</div>
+                </div>
+				<div class="col-lg-12"></br></div>
+               {/foreach}
+            </div>
+        </div>
+		<div class="row">
+		<div class="col-lg-12 text-center">
+			<ul class="pagination" style="margin-right: 10px;">
+              <li>
+                <a href="{$root}site_dir/{$this_id}/{$data.page.up.page_num}.html">Prev</a>
+              </li>
+			  {foreach from= $data.page.item item = val}
+              <li>
+                <a class="{$val.now}" href="{$root}site_dir/{$this_id}/{$val.page_num}.html">{$val.page_num}</a>
+              </li>
+
+			  {/foreach}
+              <li>
+                <a href="{$root}site_dir/{$this_id}/{$data.page.down.page_num}.html">Next</a>
+              </li>
+            </ul>
+		</div>
+		</div>
+
+</div>
+
+
+
+{/if}
+
+{if $pointer eq 'site_single'}
+<div class="container">
+
+        <div class="row">
+            <div class="box">
+                <div class="col-lg-12">
+                    <hr>
+                    <h2 class="intro-text text-center">
+                        <strong> {$data.content.title}</strong>
+                    </h2>
+                    <hr>
+                </div>
+                <div class="col-md-6">
+                    <img class="img-responsive img-border-left" src="{$my_img}" alt="">
+                </div>
+                <div class="col-md-6">
+                    {$data.content.content}
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+
+</div>
+{/if}
+
+
+{if $pointer eq 'site_page'}
+
+<div class="container">
+
+        <div class="row">
+            <div class="box">
+                <div class="col-lg-12">
+                    <hr>
+                    <h2 class="intro-text text-center">
+                        <strong> {$data.title}</strong>
+                    </h2>
+                    <hr>
+                </div>
+                <div class="col-md-6">
+                    <img class="img-responsive img-border-left" src="{$my_img}" alt="">
+                </div>
+                <div class="col-md-6">
+                    {$data.content}
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+
+</div>
+
+
+{/if}
+
+{if $pointer eq 'nf'}
+
+<div class="container">
+
+        <div class="row">
+            <div class="box">
+                <div class="col-lg-12">
+                    <h3>找不到请求的页面！</h3>
+					<p>404 The Page Not Found.</p>
+					<p><a href="{$root}">返回</a></p>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+
+</div>
+
+{/if}

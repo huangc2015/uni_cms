@@ -1,0 +1,1124 @@
+{if $pointer eq 'welcome'}
+
+<h1>欢迎使用本系统！</h1>
+
+{/if}
+{if $pointer eq 'say'}
+
+<h1>{$data}</h1>
+
+{/if}
+
+{if $pointer eq 'article'}
+
+<!--扩展容错语言-->
+{if ! isset($data.memory.dir)}{$data.memory.dir='0'}{/if}
+{if ! isset($data.memory.type)}{$data.memory.type='1'}{/if}
+{if ! isset($data.memory.public)}{$data.memory.public='0'}{/if}
+
+<div class="box box-primary">
+  <div class="box-header">
+    <h3 class="box-title"><i class="fa fa-edit"></i>&nbsp;{$data.title}</h3>
+  </div>
+  <div class="box-body">
+    <form class="form-inline" action="{$data.action}" method="post" enctype="multipart/form-data">
+      <div class="row">
+        <div class="col-lg-12 col-md-12">
+          <div class="form-group col-md-12">
+		  
+		  <input type="hidden" id="m_id" name="id" value="{$data.memory.id}">
+		  <input type="hidden" id="m_dir" value="{$data.memory.dir}">
+		  <input type="hidden" id="m_type" value="{$data.memory.type}">
+		  <input type="hidden" id="m_publics" value="{$data.memory.public}">
+		  
+		
+		  {literal}
+		  <script>
+		  $(document).ready(function(){
+
+			var dir=$("#m_dir").val()
+			var type=$("#m_type").val()
+			var publics=$("#m_publics").val()
+			
+	
+		    $("select[name='dir']").find("option[value='"+dir+"']").attr("selected",true);
+			$("select[name='type']").find("option[value='"+type+"']").attr("selected",true);
+			$("select[name='public']").find("option[value='"+publics+"']").attr("selected",true);
+			
+			if(type==="2"){
+				$("#img_item").show()
+			}else{
+				$("#img_item").hide()
+			}
+			$("select[name='type']").click(function(){
+				if($(this).val()==="2"){
+				$("#img_item").show()
+				}else{
+				$("#img_item").hide()
+				}
+			})
+		  })
+
+		  </script>
+		  {/literal}
+            <p>{$data.name}</p>
+            <p>
+			<label>归属分类：</label>
+			  <select name="dir" class="form-control" style="margin-left:7px;" >
+			  {foreach from=$data.tree item=val}
+				{if $val.id eq 0}
+				 <option value="{$val.id}">首页</option>
+				{else}
+				 <option value="{$val.id}">┣{$val.title}</option>
+				{/if}
+				
+				{if $val.son_len neq 0}
+				
+					{foreach from=$val.son item=v2}
+					 <option value="{$v2.id}">┃┗{$v2.title}</option>
+						 {if $v2.son_len neq 0}
+							{foreach from=$v2.son item=v3}
+							 <option value="{$v3.id}">┃　┗{$v3.title}</option>
+							{/foreach}
+						 {/if}
+					{/foreach}
+				{/if}
+			  {/foreach}
+			  </select>
+			
+			&nbsp;{$data.property}
+
+			</p>
+			<p id="img_item">
+			<label>组图上传:&nbsp;</label>
+			<input type='file' name='images[]' class="form-control" id='images' multiple="multiple">
+			</p>
+			
+            <p>{$data.time}</p>
+            <p>{$data.cover}{$data.cover_upload}</p>
+            <p>{$data.public}</p>
+          </div>
+        </div>
+        <!--<div class="col-lg-4 col-md-4">{$data.cover_img}</div>-->
+      </div>
+      <div class="row">
+        <div class="col-lg-8 col-md-12"> {$data.editor} </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-6 col-md-12"> <br>
+          <input type="submit" class="btn btn-info" value="{$data.title}" />
+          &nbsp;
+          <a href="{$root}/cms" class="btn btn-default"/>取消返回</a>
+		  &nbsp;
+		  {if $data.error neq ""}
+		  <span class="text-red">警告：{$data.error}</span>
+		  {/if}
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{/if}
+{if $pointer eq 'directorys'}
+<div class="box box-primary my_panel">
+  <div class="box-header">
+    <h3 class="box-title"><i class="fa fa-book"></i>&nbsp;目录设置<small class="text-red">（提示：请先选中目录层级后再进行操作！）</small></h3>
+  </div>
+  <div class="box-body">
+    <div class="row">
+      <div class="col-lg-3 col-md-6">
+        <div class="form-group">
+          <label>请选择目录</label>
+          <select id="dir" name="dir" class="form-control" size="32">
+		  {foreach from=$data.tree item=val}
+				{if $val.id eq 0}
+				 <option  title="{$val.lv}" value="{$val.id}">首页</option>
+				{else}
+				 <option  title="{$val.lv}" value="{$val.id}">┣{$val.title}</option>
+				{/if}
+				
+				{if $val.son_len neq 0}
+				
+					{foreach from=$val.son item=v2}
+					 <option  title="{$v2.lv}" value="{$v2.id}">┃┗{$v2.title}</option>
+						 {if $v2.son_len neq 0}
+							{foreach from=$v2.son item=v3}
+							 <option title="{$v3.lv}" value="{$v3.id}">┃　┗{$v3.title}</option>
+							{/foreach}
+						 {/if}
+					{/foreach}
+				{/if}
+			  {/foreach}
+          </select>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="form-inline">
+          <label>目录信息：</label>
+          <table class="table table-bordered">
+            <tr>
+              <th>ID</th>
+              <th><span id="dir_id"></span></th>
+             
+            </tr>
+            <tr>
+              <td>名称</td>
+              <td><div class="form-group">
+                  <input id="dir_name" type="text" class="form-control" placeholder="请输入目录的新名称..">
+                </div></td>
+            </tr>
+			<tr>
+              <td>属性</td>
+              
+              <td><div class="form-group">
+                  {$data.now_type}
+                </div></td>
+            </tr>
+            <tr>
+              <td>状态</td>
+              
+              <td><div class="form-group">
+                  {$data.now_status}    
+                </div></td>
+            </tr>
+			<tr>
+              <td></td>
+              
+              <td><div class="modified form-group">
+                  <button class="btn btn-info btn-sm" type="button">提交修改</button>
+				  &nbsp;<span style="font-size:12px;" class="text-green"></span>
+                </div></td>
+            </tr>
+            
+          </table>
+        </div>
+        <hr>
+        <div class="form-inline">
+          <div class="form-group">
+            <label>新增目录</label>
+            <p>
+              <label>名称：</label>
+              <input id="add_name" style="width:308px;" type="text" class="form-control" placeholder="请输入目录名称..">
+            </p>
+            <p>
+             
+              {$data.type}
+              
+              {$data.status}
+              <button id="add_new" class="btn btn-info btn-flat" type="button">新增</button>
+            </p>
+			<span style="font-size:12px;" class="add_msg text-green">&nbsp;</span>
+          </div>
+        </div>
+        <hr>
+        <div class="form-inline">
+          <div class="form-group updown">
+            <p>
+              <label>排序调整：</label>
+              <button class="dir_up btn btn-info btn-flat" type="button">上移</button>
+              <button class="dir_down btn btn-info btn-flat" type="button">下移</button>
+			  <span style="font-size:12px;" class="text-green"></span>
+            </p>
+          </div>
+        </div>
+        <hr>
+        <div class="form-inline">
+          <div class="form-group dir_del">
+            <p>
+              <button class="btn btn-info btn-flat" type="button">删除选中目录(包含所有子目录)</button>
+			  <span style="font-size:12px;" class="text-green"></span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ {literal}
+ <script>
+$(document).ready(function(){
+
+panel_ready()
+
+function panel_ready(){
+
+	dir_show()
+	$('.my_panel *').unbind();
+	
+
+	$("#dir").bind("click",function(){
+		var id=$(this).val();
+		
+		send("../ajax/dir_read",{id:id},function(e){
+		
+			$("#dir_id").text(e.id)
+			$("#dir_name").val(e.name)
+			$("select[name='dir_type']").find("option[value='"+e.type+"']").attr("selected",true);
+			$("select[name='dir_status']").find("option[value='"+e.status+"']").attr("selected",true);
+			
+		})
+	})
+	
+	$(".modified .btn").bind("click",function(){
+	
+		var id=$("#dir_id").text()
+		var name=$("#dir_name").val()
+		var type=$("select[name='dir_type']").val()
+		var status=$("select[name='dir_status']").val()
+		var warming=0;
+		
+		
+		if(id==="0"){
+			warming+=1
+			alert("首页不得修改！")
+		}
+		
+		if(id===""){
+			warming+=1
+			alert("未选中目录！")
+		}
+		if(name===""){
+			warming+=1
+			alert("目录名称不得为空！")
+		}
+		
+		if(warming===0){
+		
+			send("../ajax/dir_mod",{id:id,name:name,type:type,status:status},function(e){
+					$(".modified span").fadeTo(1000,1)
+					$(".modified span").text(e.msg)
+					$(".modified span").fadeTo(3000,0)
+					panel_ready()
+			})
+		
+		}
+	
+	})
+	
+	$("#add_new").bind("click",function(){
+		
+		var pid=$("#dir_id").text()
+		var lv=$("#dir").find("option:selected").attr("title")
+		var name=$("#add_name").val()
+		var type=$("select[name='add_type']").val()
+		var status=$("select[name='add_status']").val()
+		var warming=0;
+		
+		if(pid===""){
+			warming+=1
+			alert("未选中目录！")
+		}
+		if(lv==="3"){
+			warming+=1
+			alert("目录深度不可超过第三级！")
+		}
+		if(name===""){
+			warming+=1
+			alert("新建目录名称不得为空！")
+		}
+		
+		if(warming===0){
+		
+			send("../ajax/dir_add",{pid:pid,name:name,type:type,status:status,lv:lv},function(e){
+			
+					$("#add_name").val("")
+					$(".add_msg").fadeTo(1000,1)
+					$(".add_msg").text(e.msg)
+					$(".add_msg").fadeTo(3000,0)
+					panel_ready()
+			
+			})
+		
+		}
+	
+	})
+	
+	$(".dir_up").bind("click",function(){
+	
+		var id=$("#dir_id").text()
+		var warming=0;
+		
+		if(id===""){
+			warming+=1
+			alert("未选中目录！")
+		}
+		
+		if(id==="0"){
+			warming+=1
+			alert("“首页”不可移动！")
+		}
+		if(warming===0){
+		
+			send("../ajax/dir_updown",{id:id,action:"-1"},function(e){
+			
+					$(".updown span").fadeTo(1000,1)
+					$(".updown span").text(e.msg)
+					$(".updown span").fadeTo(3000,0)
+						panel_ready()
+			})
+			
+		}
+	
+		
+			
+	})
+	$(".dir_down").bind("click",function(){
+	
+		var id=$("#dir_id").text()
+		var warming=0;
+
+		if(id===""){
+			warming+=1
+			alert("未选中目录！")
+		}
+		
+		if(id==="0"){
+			warming+=1
+			alert("“首页”不可移动！")
+		}
+		if(warming===0){
+		
+			send("../ajax/dir_updown",{id:id,action:"1"},function(e){
+					
+					$(".updown span").fadeTo(1000,1)
+					$(".updown span").text(e.msg)
+					$(".updown span").fadeTo(3000,0)
+					
+					panel_ready()
+			})
+		}
+		
+		
+			
+	})
+	
+	$(".dir_del .btn").bind("click",function(){
+	
+		var id=$("#dir_id").text()
+		var warming=0;
+		
+		if(id===""){
+			warming+=1
+			alert("未选中目录！")
+		}
+		if(id==="0"){
+			warming+=1
+			alert("首页不可删除！")
+		}
+		if(warming === 0){
+			
+			send("../ajax/dir_del",{id:id,action:"del"},function(e){
+						
+						$(".dir_del span").fadeTo(1000,1)
+						$(".dir_del span").text(e.msg)
+						$(".dir_del span").fadeTo(3000,0)
+						
+						panel_ready()
+			})
+		
+		}
+	})
+	
+	
+
+	
+}
+function dir_show(){
+
+			send("../ajax/dir_show",{action:""},function(e){
+					
+					$("#dir_id").text("")
+					$("#dir_name").val("")
+					$("#dir").html(e.html)
+			})
+
+}
+function send(url,data,fun){
+	$.ajax({
+			type:"POST",
+			url:url,
+			dataType: "json",
+			data:data,
+			success:fun
+	})
+}
+		  
+})
+</script>
+{/literal}
+{/if}
+{if $pointer eq 'management'}
+<div class="box box-primary">
+  <div class="box-header">
+    <h3 class="box-title"><i class="fa fa-archive"></i>&nbsp;文章管理<small class="text-red">（提示：请先选中目录层级后再进行操作！）</small></h3>
+  </div>
+  <div class="box-body">
+    <div class="row">
+      <div class="col-lg-2 col-md-3">
+        <div class="form-group">
+          <label>选择目录</label>
+          <select id="dir" name="dir" class="form-control" size="24">
+           {foreach from=$data.tree item=val}
+				{if $val.id eq 0}
+				 <option value="{$val.id}">首页</option>
+				{else}
+				 <option value="{$val.id}">┣{$val.title}</option>
+				{/if}
+				
+				{if $val.son_len neq 0}
+				
+					{foreach from=$val.son item=v2}
+					 <option value="{$v2.id}">┃┗{$v2.title}</option>
+						 {if $v2.son_len neq 0}
+							{foreach from=$v2.son item=v3}
+							 <option value="{$v3.id}">┃　┗{$v3.title}</option>
+							{/foreach}
+						 {/if}
+					{/foreach}
+				{/if}
+			  {/foreach}
+          </select>
+        </div>
+      </div>
+      <div id="at_table" class="col-lg-10 col-md-9 table-responsive">
+	  
+       {$data.table}
+      </div>
+    </div>
+  </div>
+</div>
+<script src="{$root}/js/datatables/jquery.dataTables.js" type="text/javascript"></script>
+<script src="{$root}/js/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
+{literal}
+<script type="text/javascript">
+$(document).ready(function(){
+
+	table_ready() 
+
+	$("#dir").bind("click",function(){
+		var id=$(this).val();
+		var name=$(this).find("option:selected").text();
+
+		send("../ajax/at_table",{id:id,name:name},function(e){
+		
+		$('#atlist *').unbind();
+		$("#at_table").html(e);
+		table_ready()
+
+		})
+	})
+function table_ready(){
+$("#atlist").dataTable({"aaSorting": [[ 0, "desc" ]]});  
+}
+
+function send(url,data,fun){
+	$.ajax({
+			type:"POST",
+			url:url,
+			data:data,
+			success:fun
+	})
+}
+	 
+});
+
+</script>
+{/literal}
+{/if}
+{if $pointer eq 'massage'}
+<!-- feedback
+<div class="row">
+  <div class="col-lg-6 col-md-10">
+    <div class="box box-primary">
+      <div class="box-header">
+        <h3 class="box-title"><i class="fa fa-envelope"></i>&nbsp;留言反馈</h3>
+      </div>
+      <div class="box-body">
+        <div class="message">
+          <p><strong>名字</strong></p>
+          <p><small>日期</small></p>
+          <p><small>联系方式</small></p>
+          <blockquote>
+            <p>内容</p>
+          </blockquote>
+        </div>
+        <hr>
+        <div class="feedback">
+          <h4>反馈：</h4>
+          <blockquote>
+            <p>联系方式联系方式联系方式联系方式联系方式联系方式联系方式</p>
+          </blockquote>
+        </div>
+        <hr>
+        <div class="feedbackmsg">
+          <div class="form-group">
+            <label>反馈内容填写：</label>
+            <textarea class="form-control" rows="3" placeholder="Enter ..."></textarea>
+            </br>
+            <input type="submit" class="btn btn-info" value="反馈">
+            <input type="submit" class="btn btn-default" value="删除这条留言">
+            <input type="submit" class="btn btn-default" value="返回留言列表">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+-->
+
+<div class="box box-primary">
+<div class="box-header">
+  <h3 class="box-title"><i class="fa fa-envelope"></i>&nbsp;留言管理</h3>
+</div>
+<div class="box-body">
+  <div class="box-body table-responsive">
+    <table id="example2" class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>留言日期</th>
+          <th>留言人</th>
+          <th>联系方式</th>
+          <th>已反馈？</th>
+          <th>已查看？</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2016/01/01</td>
+          <td>Mr huang</td>
+          <td>qq000000000</td>
+          <td>是</td>
+          <td>是</td>
+          <td><a href="">查看</a>/<a href="">删除</a></td>
+        </tr>
+        <tr>
+          <td>2016/01/01</td>
+          <td>Mr huang</td>
+          <td>qq000000000</td>
+          <td>是</td>
+          <td>是</td>
+          <td><a href="">查看</a>/<a href="">删除</a></td>
+        </tr>
+        <tr>
+          <td>2016/01/01</td>
+          <td>Mr huang</td>
+          <td>qq000000000</td>
+          <td>是</td>
+          <td>是</td>
+          <td><a href="">查看</a>/<a href="">删除</a></td>
+        </tr>
+        <tr>
+          <td>2016/01/01</td>
+          <td>Mr huang</td>
+          <td>qq000000000</td>
+          <td>是</td>
+          <td>是</td>
+          <td><a href="">查看</a>/<a href="">删除</a></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>留言日期</th>
+          <th>留言人</th>
+          <th>联系方式</th>
+          <th>已反馈？</th>
+          <th>已查看？</th>
+          <th>操作</th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <!-- /.box-body -->
+</div>
+<!-- /.box -->
+
+{/if}
+{if $pointer eq 'systems'}
+<div class="box box-primary">
+  <div class="box-header">
+    <h3 class="box-title"><i class="fa fa-cogs"></i>&nbsp;系统设置</h3>
+  </div>
+  <div class="box-body table-responsive">
+    {$data.table}
+  </div>
+  <!-- /.box-body -->
+</div>
+
+{/if}
+{if $pointer eq 'tag'}
+<div class="box box-primary">
+  <div class="box-header">
+    <h3 class="box-title"><i class="fa fa-tags"></i>&nbsp;标签设置</h3>
+  </div>
+  <div class="box-body table-responsive">
+    {$data.table}
+  </div>
+  <!-- /.box-body -->
+</div>
+
+{/if}
+{if $pointer eq 'counter_line'}
+
+<div class="box box-info">
+  <div class="box-header">
+    <h3 class="box-title">Line Chart</h3>
+  </div>
+  <div class="box-body chart-responsive">
+    <div class="row">
+	
+	  <div class="col-lg-4 col-md-12">
+        <h5 class="text-center">当日统计曲线</h5>
+        <div class="chart" id="line-chart" style="height: 300px;"></div>
+      </div>
+      
+	  
+      <div class="col-lg-4 col-md-12">
+        <h5 class="text-center">本月统计曲线</h5>
+        <div class="chart" id="line-chart" style="height: 300px;"></div>
+      </div>
+	  
+	  <div class="col-lg-4 col-md-12">
+        <h5 class="text-center">本年度统计曲线</h5>
+        <div class="chart" id="line-chart" style="height: 300px;"></div>
+      </div>
+      
+	  
+    </div>
+  </div>
+</div>
+<script src="{$root}/js/raphael-min.js"></script>
+<script src="{$root}/js/morris/morris.min.js" type="text/javascript"></script>
+{literal}
+<script type="text/javascript">
+            $(function() {
+
+ // LINE CHART
+                var line = new Morris.Line({
+                    element: 'line-chart',
+                    resize: true,
+                    data: [
+                        {y: '1', item1: 2666},
+                        {y: '2', item1: 2778},
+                        {y: '3', item1: 4912},
+                        {y: '4', item1: 3767},
+                        {y: '5', item1: 6810},
+                        {y: '6', item1: 5670},
+                        {y: '7', item1: 4820},
+                        {y: '8', item1: 15073},
+                        {y: '9', item1: 10687},
+                        {y: '10', item1: 8432}
+                    ],
+                    xkey: 'y',
+                    ykeys: ['item1'],
+                    labels: ['Item 1'],
+                    lineColors: ['#3c8dbc'],
+                    hideHover: 'auto'
+                });
+
+ });
+</script>
+{/literal}
+
+{/if}
+{if $pointer eq 'counter_data'}
+
+<div class="box box-primary">
+  <div class="box-header">
+    <h3 class="box-title"><i class="fa fa-bar-chart-o"></i>&nbsp;访问数据</h3>
+  </div>
+
+    <div class="box-body table-responsive">
+	<div class="row">
+	<div class="col-lg-12">
+	<a href="" class="btn btn-success btn-sm">下载所有数据</a>
+	<a href="" class="btn btn-default btn-sm">清除所有数据</a>	
+	
+	</div>
+		
+	</div>
+	</br>
+      <table id="example2" class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Rendering engine</th>
+            <th>Browser</th>
+            <th>Platform(s)</th>
+            <th>Engine version</th>
+            <th>CSS grade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Trident</td>
+            <td>Internet
+              Explorer 4.0</td>
+            <td>Win 95+</td>
+            <td> 4</td>
+            <td>X</td>
+          </tr>
+          <tr>
+            <td>Gecko</td>
+            <td>Mozilla 1.5</td>
+            <td>Win 95+ / OSX.1+</td>
+            <td>1.5</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Gecko</td>
+            <td>Mozilla 1.6</td>
+            <td>Win 95+ / OSX.1+</td>
+            <td>1.6</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Gecko</td>
+            <td>Mozilla 1.7</td>
+            <td>Win 98+ / OSX.1+</td>
+            <td>1.7</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Gecko</td>
+            <td>Mozilla 1.8</td>
+            <td>Win 98+ / OSX.1+</td>
+            <td>1.8</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Gecko</td>
+            <td>Seamonkey 1.1</td>
+            <td>Win 98+ / OSX.2+</td>
+            <td>1.8</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Gecko</td>
+            <td>Epiphany 2.20</td>
+            <td>Gnome</td>
+            <td>1.8</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Webkit</td>
+            <td>Safari 1.2</td>
+            <td>OSX.3</td>
+            <td>125.5</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Webkit</td>
+            <td>Safari 1.3</td>
+            <td>OSX.3</td>
+            <td>312.8</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Webkit</td>
+            <td>Safari 2.0</td>
+            <td>OSX.4+</td>
+            <td>419.3</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Webkit</td>
+            <td>Safari 3.0</td>
+            <td>OSX.4+</td>
+            <td>522.1</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Webkit</td>
+            <td>OmniWeb 5.5</td>
+            <td>OSX.4+</td>
+            <td>420</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Webkit</td>
+            <td>iPod Touch / iPhone</td>
+            <td>iPod</td>
+            <td>420.1</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Webkit</td>
+            <td>S60</td>
+            <td>S60</td>
+            <td>413</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Presto</td>
+            <td>Opera 7.0</td>
+            <td>Win 95+ / OSX.1+</td>
+            <td>-</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Presto</td>
+            <td>Opera 7.5</td>
+            <td>Win 95+ / OSX.2+</td>
+            <td>-</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Presto</td>
+            <td>Opera 8.0</td>
+            <td>Win 95+ / OSX.2+</td>
+            <td>-</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Presto</td>
+            <td>Opera 8.5</td>
+            <td>Win 95+ / OSX.2+</td>
+            <td>-</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Presto</td>
+            <td>Opera 9.0</td>
+            <td>Win 95+ / OSX.3+</td>
+            <td>-</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Presto</td>
+            <td>Opera 9.2</td>
+            <td>Win 88+ / OSX.3+</td>
+            <td>-</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Presto</td>
+            <td>Opera 9.5</td>
+            <td>Win 88+ / OSX.3+</td>
+            <td>-</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Presto</td>
+            <td>Opera for Wii</td>
+            <td>Wii</td>
+            <td>-</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Presto</td>
+            <td>Nokia N800</td>
+            <td>N800</td>
+            <td>-</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Presto</td>
+            <td>Nintendo DS browser</td>
+            <td>Nintendo DS</td>
+            <td>8.5</td>
+            <td>C/A<sup>1</sup></td>
+          </tr>
+          <tr>
+            <td>KHTML</td>
+            <td>Konqureror 3.1</td>
+            <td>KDE 3.1</td>
+            <td>3.1</td>
+            <td>C</td>
+          </tr>
+          <tr>
+            <td>KHTML</td>
+            <td>Konqureror 3.3</td>
+            <td>KDE 3.3</td>
+            <td>3.3</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>KHTML</td>
+            <td>Konqureror 3.5</td>
+            <td>KDE 3.5</td>
+            <td>3.5</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Tasman</td>
+            <td>Internet Explorer 4.5</td>
+            <td>Mac OS 8-9</td>
+            <td>-</td>
+            <td>X</td>
+          </tr>
+          <tr>
+            <td>Tasman</td>
+            <td>Internet Explorer 5.1</td>
+            <td>Mac OS 7.6-9</td>
+            <td>1</td>
+            <td>C</td>
+          </tr>
+          <tr>
+            <td>Tasman</td>
+            <td>Internet Explorer 5.2</td>
+            <td>Mac OS 8-X</td>
+            <td>1</td>
+            <td>C</td>
+          </tr>
+          <tr>
+            <td>Misc</td>
+            <td>NetFront 3.1</td>
+            <td>Embedded devices</td>
+            <td>-</td>
+            <td>C</td>
+          </tr>
+          <tr>
+            <td>Misc</td>
+            <td>NetFront 3.4</td>
+            <td>Embedded devices</td>
+            <td>-</td>
+            <td>A</td>
+          </tr>
+          <tr>
+            <td>Misc</td>
+            <td>Dillo 0.8</td>
+            <td>Embedded devices</td>
+            <td>-</td>
+            <td>X</td>
+          </tr>
+          <tr>
+            <td>Misc</td>
+            <td>Links</td>
+            <td>Text only</td>
+            <td>-</td>
+            <td>X</td>
+          </tr>
+          <tr>
+            <td>Misc</td>
+            <td>Lynx</td>
+            <td>Text only</td>
+            <td>-</td>
+            <td>X</td>
+          </tr>
+          <tr>
+            <td>Misc</td>
+            <td>IE Mobile</td>
+            <td>Windows Mobile 6</td>
+            <td>-</td>
+            <td>C</td>
+          </tr>
+          <tr>
+            <td>Misc</td>
+            <td>PSP browser</td>
+            <td>PSP</td>
+            <td>-</td>
+            <td>C</td>
+          </tr>
+          <tr>
+            <td>Other browsers</td>
+            <td>All others</td>
+            <td>-</td>
+            <td>-</td>
+            <td>U</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th>Rendering engine</th>
+            <th>Browser</th>
+            <th>Platform(s)</th>
+            <th>Engine version</th>
+            <th>CSS grade</th>
+          </tr>
+        </tfoot>
+      </table>
+	  
+	
+    </div>
+	
+  <script src="{$root}/js/datatables/jquery.dataTables.js" type="text/javascript"></script>
+  <script src="{$root}/js/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
+  <script type="text/javascript">
+            $(function() {
+                
+                $('#example2').dataTable({
+                    "bPaginate": true,
+                    "bLengthChange": false,
+                    "bFilter": false,
+                    "bSort": true,
+                    "bInfo": true,
+                    "bAutoWidth": false
+                });
+            });
+        </script>
+
+</div>
+
+{/if}
+
+{if $pointer eq 'admin'}
+<div class="box box-primary">
+  <div class="box-header">
+    <h3 class="box-title"><i class="fa fa-user"></i>&nbsp;密码修改</h3>
+  </div>
+  <div class="box-body">
+	<div class="row">
+		<div class="col-lg-6">
+		<form action="{$root}/cms/password_change" method="post">
+		<p>
+		<label>新密码：</label>
+		<input name="new_pwd" type="password" class="form-control" >
+		</p>
+		<p><input type="submit" class="btn btn-info" value="提交修改" /></p>
+		</form>
+	</div>
+	</div>
+  </div>
+</div>
+
+{/if}
+{if $pointer eq 'newtag'}
+<div class="box box-primary">
+  <div class="box-header">
+    <h3 class="box-title"><i class="fa fa-edit"></i>&nbsp;NEW TAG</h3>
+  </div>
+  <div class="box-body">
+	<div class="row">
+		<div class="col-lg-6">
+		
+		<p>{$data.name}</p>
+		<p>{$data.code}</p>
+		<p>{$data.type}</p>
+		<p>{$data.editor}</p>
+		<p>1</p>
+		<p>1</p>
+	</div>
+	</div>
+  </div>
+</div>
+{/if}
+
+{if $pointer eq 'backup'}
+<div class="box box-primary">
+  <div class="box-header">
+    <h3 class="box-title"><i class="fa fa-copy"></i>&nbsp;数据库备份</h3>
+  </div>
+  <div class="box-body">
+	<div class="row">
+		<div class="col-lg-6">
+		
+	
+	</div>
+	</div>
+  </div>
+</div>
+{/if}
+{if $pointer eq 'back'}
+<div class="box box-primary">
+  <div class="box-header">
+    <h3 class="box-title"><i class="fa fa-reply"></i>&nbsp;数据库还原</h3>
+  </div>
+  <div class="box-body">
+	<div class="row">
+		<div class="col-lg-6">
+
+	</div>
+	</div>
+  </div>
+</div>
+{/if}

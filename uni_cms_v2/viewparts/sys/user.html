@@ -1,0 +1,23 @@
+{if $pointer eq 'password'}
+
+<div class="box box-primary">
+  <div class="box-header">
+    <h3 class="box-title"><i class="fa fa-user"></i>&nbsp;密码修改</h3>
+  </div>
+  <div class="box-body">
+	<div class="row">
+		<div class="col-lg-6">
+		<p>{$data}</P>
+		<form action="password_change" method="post">
+		<p>
+		<label>新密码：</label>
+		<input name="new_pwd" type="password" class="form-control" >
+		</p>
+		<p><input type="submit" class="btn btn-info" value="提交修改" /></p>
+		</form>
+	</div>
+	</div>
+  </div>
+</div>
+
+{/if}

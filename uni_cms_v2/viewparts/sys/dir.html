@@ -1,0 +1,278 @@
+{if $pointer eq 'panel'}
+
+                    <div class="row my_panel">
+                        <div class="col-xs-12">
+                            
+                            <div class="box">
+                                <div class="box-header">
+									<h3 class="box-title">目录管理</h3>
+									
+                                </div><!-- /.box-header -->
+                                <div class="box-body table-responsive">
+								<div class="row">
+								<div class="col-md-3">
+									<select id="dir" size="30" class="form-control">
+                                                <option>载入中...</option>
+                                    </select>
+								</div>
+								<div class="col-md-9">
+									
+{literal}
+									<style>
+									.table input,.table select{display:inline;width:auto;float:none;}
+									.table input{text-align:center;}
+									.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td
+			{border:none;}
+									</style>
+{/literal}
+<table class="table">
+	<tbody>
+		<tr>
+			<td style="width:80px;vertical-align: middle;text-align:center;font-weight:bold;border:1px solid #ccc;color:#999;">
+			<div id="model">当前目录信息</div></td>
+			<td>
+			<p>目录名称：<input id="title" class="form-control input-sm" type="text" placeholder="请输入.."></p>
+
+			<p>目录属性：<select id="type" class="form-control">
+                                                <option>请选择..</option>
+                                            </select></p>
+
+			<p>上级目录：<select id="pid" class="form-control" >
+                                                <option>请选择..</option>
+                                            </select></p>
+			<p>是否隐藏：<select id="status" class="form-control">
+                                                <option value="0">否</option><option value="1">是</option>
+                                            </select></p>
+			
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td style="vertical-align: middle;text-align:center;font-weight:bold;border:1px solid #ccc;color:#999;">操作</td>
+			<td>
+			<p><a id="new" class="btn btn-success btn-sm">新建目录</a>&nbsp;<a id="new_submit" class="btn btn-success btn-sm disabled">提交新建</a></p>
+			<p><a id="mod_submit" class="btn btn-primary btn-sm disabled">提交修改</a>&nbsp;<a id="up" class="btn btn-primary btn-sm disabled">上移</a>&nbsp;<a id="down" class="btn btn-primary btn-sm disabled">下移</a></p>
+			<p><a id="del" class="btn btn-danger btn-sm disabled">删除当前及其子目录</a></p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+								</div>
+								</div>
+                                    
+                                </div><!-- /.box-body -->
+                            </div><!-- /.box -->
+                        </div>
+                    </div>
+{literal}
+<script src="../js/jquery.cookie.js" ></script>
+
+<script>
+
+
+
+$(function(){
+
+
+		
+		load_new()
+		
+		$("#dir").click(function(){
+
+			$("#model").text("当前目录信息")
+			lock("lock",["new_submit"])
+			$("#title").attr("disabled",false);
+			$("#type").attr("disabled",false);
+			$("#pid").attr("disabled",false);
+			$("#status").attr("disabled",false);
+			var id=$(this).val()
+	
+			send("Dir_do/read_one/"+id,"",function(e){
+			
+				$("#title").val(e.title)
+				$("#pid").val(e.pid)
+				$("#pid").attr("disabled",true)
+				$("#type").val(e.type)
+				$("#status").val(e.status)
+				
+				lock("unlock",["new","mod_submit","up","down","del"])
+
+			})
+
+		})
+
+		$("#new").click(function(){
+		
+			
+			$("#title").attr("disabled",false);
+			$("#type").attr("disabled",false);
+			$("#pid").attr("disabled",false);
+			$("#status").attr("disabled",false);
+			
+			$("#model").text("新建目录")
+			$("#title").val("")
+			$("#pid").val(0)
+			$("#type").val(1)
+			$("#status").val(0)
+				
+			lock("lock",["new","mod_submit","up","down","del"])
+			lock("unlock",["new_submit"])
+
+		})
+		
+		$("#new_submit").click(function(){
+
+			var msg={
+					"title":$("#title").val(),
+					"pid":$("#pid").val(),
+					"type":$("#type").val(),
+					"status":$("#status").val()
+			}
+			
+			send("Dir_do/add_one",msg,function(e){
+					load_new()
+					if(e.msg === "1"){
+						msg_after("new_submit","新建成功！")
+					}else{
+						msg_after("new_submit","失败！")
+					}
+				})
+				
+			lock("unlock",["new","mod_submit","up","down","del"])
+			lock("lock",["new_submit"])
+				
+		})
+		
+		$("#mod_submit").click(function(){
+
+			var msg={
+					"id":$("#dir").val(),
+					"title":$("#title").val(),
+					"pid":$("#pid").val(),
+					"type":$("#type").val(),
+					"status":$("#status").val()
+			}
+			
+			send("Dir_do/modify",msg,function(e){
+					load_new()
+					
+					if(e.msg === "1"){
+						$("#title").val("")
+						$("#pid").val(0)
+						$("#type").val(1)
+						$("#status").val(0)
+						msg_after("down","修改成功！")
+					}else{
+						msg_after("down","失败！")
+					}
+				})
+				
+		})
+		
+		$("#up").click(function(){
+			var id=$("#dir").val();
+			send("Dir_do/move/up/"+id,"",function(e){
+					load_new()
+					
+					if(e.msg === "1"){
+						$("#title").val("")
+						$("#pid").val(0)
+						$("#type").val(1)
+						$("#status").val(0)
+						msg_after("down","修改成功！")
+						
+					}else{
+						msg_after("down","失败！")
+					}
+					
+
+				})
+				
+		})
+		$("#down").click(function(){
+			var id=$("#dir").val();
+			send("Dir_do/move/down/"+id,"",function(e){
+					load_new()
+					
+					if(e.msg === "1"){
+						$("#title").val("")
+						$("#pid").val(0)
+						$("#type").val(1)
+						$("#status").val(0)
+						msg_after("down","修改成功！")
+						
+					}else{
+						msg_after("down","失败！")
+					}
+					
+				})
+				
+		})
+		
+		$("#del").click(function(){
+			var id=$("#dir").val()
+			if(confirm("确定要删除？")){
+			send("Dir_do/del_one/"+id,"",function(e){
+					load_new()
+					if(e.msg === "1"){
+						msg_after("del","删除成功！")
+					}else{
+						msg_after("del","失败！")
+					}
+				})
+			}
+		})
+function msg_after(name,msg){
+
+	$("#"+name).after("&nbsp;<span class='msgtxt text-green'>"+msg+"</span>")
+	$(".msgtxt").fadeOut(3000,function(){$(".msgtxt").remove()})
+	
+}
+function load_new(){
+			$("#dir").load("Dir_do/read_dir_list",function(){
+				$("#dir").attr("disabled",false);
+				$("#dir option").eq(0).attr("disabled",true);
+				$("#title").attr("disabled",true);
+				$("#title").attr("disabled",true);
+				$("#type").attr("disabled",true);
+				$("#pid").attr("disabled",true);
+				$("#status").attr("disabled",true);
+			});
+			$("#pid").load("Dir_do/read_dir_list");
+			$("#type").load("Dir_do/type_list");
+			
+		}
+
+function lock(lock,list){
+				
+				var count = list.length
+				
+					for(var i=0;i<count;i++){
+
+						if(lock != "unlock"){
+							$("#"+list[i]).addClass("disabled")
+						}else{
+							$("#"+list[i]).removeClass("disabled")
+						}
+					}
+}
+
+
+function send(url,obj,fn){
+$.ajax({
+            type:"POST",
+            url: url,
+            data:obj,
+			success:fn,
+			dataType:'json'
+        });	
+}
+
+})
+</script>
+{/literal}
+{/if}

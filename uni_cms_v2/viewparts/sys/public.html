@@ -1,0 +1,144 @@
+{if $pointer eq 'dir_tree'}
+
+			  {foreach from=$data item=val}
+				{if $val.id eq 0}
+				 <option value="{$val.id}" >首页</option>
+				{else}
+				 <option style="color:blue" value="{$val.id}">┣{$val.title}</option>
+				{/if}
+				
+				{if $val.son_len neq 0}
+				
+					{foreach from=$val.son item=v2}
+					 <option style="color:green" value="{$v2.id}">┃┗{$v2.title}</option>
+						 {if $v2.son_len neq 0}
+							{foreach from=$v2.son item=v3}
+							 <option style="color:orange"value="{$v3.id}">┃　┗{$v3.title}</option>
+							{/foreach}
+						 {/if}
+					{/foreach}
+				{/if}
+			  {/foreach}
+
+{/if}
+
+{if $pointer eq 'type_list'}
+<option value="1">文本列表</option>
+<option value="2">图文列表</option>
+<option value="3">相册</option>
+<option value="4">单页</option>
+{/if}
+
+{if $pointer eq 'backup_table'}
+
+<thead>
+<tr>
+<td>序号</td>
+<td>备份存档</td>
+<td>文件大小</td>
+<td>操作</td>
+</tr>
+</thead>
+<tbody>
+
+{foreach from=$data key=id item=val}
+<tr>
+<td>{$id+1}</td>
+<td>{$val.file}</td>
+<td>{$val.size}</td>
+<td>
+<div class="btn-group">
+<a title="{$val.file}" class="turnback btn btn-sm btn-default">还原</a>
+<a title="{$val.file}" class="download btn btn-sm btn-success">&nbsp;&nbsp;下载&nbsp;&nbsp;</a>
+<a title="{$val.file}" class="del btn btn-sm btn-danger">删除</a>
+</div>
+</td>
+</tr>
+{/foreach}
+	
+</tbody>
+{/if}
+{if $pointer eq 'vlog_table'}
+
+<table id="example1" class="table table-bordered table-striped">
+<thead>
+  <tr>
+<th>日期</th>
+  <th>时间</th>
+  <th>参考IP</th>
+  <th>来源\访问地址</th>
+  <th>客户端信息</th>
+  </tr>
+</thead>
+<tbody>
+{foreach from=$data item=val}	  
+  <tr>
+  <th>{$val.year}/{$val.month}/{$val.day}</th>
+  <th>{$val.time}</th>
+  <th>{$val.ip}</th>
+  <th><p>源:{$val.source}</p><p>访:{$val.target}</p></th>
+  <th><span title="{$val.client}">{$val.client}</span></th>
+  </tr>
+{/foreach}
+</tbody>
+</table>
+
+{/if}
+
+{if $pointer eq 'dir_table'}
+<div>
+<a id="sel_all" class="btn btn-primary btn-sm">全选</a>
+<a id="sel_back" class="btn btn-primary btn-sm">反选</a>
+<a id="sel_del" class="btn btn-danger btn-sm" >删除选中项</a>
+<select id="move_list" style="display:inline;float:none;width:auto;" class="form-control">
+<option>移动到..</option>
+</select>
+<a id="sel_go" class="btn btn-primary btn-sm">移动</a>
+</div>
+</br>
+<table id="dir_table" class="table table-bordered table-striped">
+ <thead>
+ <tr>
+ <th>选</th>
+ <th>ID</th>
+ <th>日期</th>
+ <th>[状态]标题</th>
+ <th>点击量</th>
+ <th>操作</th>
+ </tr>
+ </thead>
+ <tbody>
+{foreach from=$data item=val}
+ <tr>
+ <th><input class="sel" value="{$val.id}" type="checkbox"/></th>
+ <th>{$val.id}</th>
+ <th>{$val.add_time}</th>
+ <th>
+  {if $val.status eq '1'}
+ <font style="color:blue;">[隐藏]</font>
+ {else}
+ <font style="color:green;">[公开]</font>
+ {/if}
+ {$val.title}</th>
+ <th style="">{$val.hits}</th>
+ <th>
+
+<select style="display:inline;float:none;width:auto;" class="sel_do form-control">
+<option value="{$val.id}">操作</option>
+<option value="">----</option>
+<option value="check">查看</option>
+<option value="edit">编辑</option>
+{if $val.status eq '1'}
+<option style="color:green;" value="show">公开</option>
+{else}
+<option style="color:blue;" value="hide">隐藏</option>
+{/if}
+<option value="">----</option>
+<option value="del" style="color:red;">删除</option>
+</select>
+ </th>
+ </tr>
+ {/foreach}
+ </tbody>    
+    </table>
+{/if}

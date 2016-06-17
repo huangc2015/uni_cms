@@ -1,0 +1,87 @@
+{if $pointer eq 'table_article'}
+<table id="atlist" class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th style="width:50%;">标题</th>
+      <th>创建日期</th>
+      <th>状态</th>
+	  <th>点击量</th>
+      <th>操作项</th>
+    </tr>
+  </thead>
+  <tbody>
+  {foreach from=$data item=val}
+    <tr>
+      <td>{$val.id}</td>
+      <td>{$val.title}</td>
+      <td>{$val.add_time}</td>
+      <td>
+	  {if $val.status neq "0"}
+	  隐藏
+	  {else}
+	  显示
+	  {/if}
+	  </td>
+	  <td>{$val.hits}</td>
+      <td>
+	  <a href="">预览</a><span>/</span>
+	  <a href="{$root}/cms/call/mod_article/{$val.id}">修改</a><span>/</span>
+	  
+	  {if $val.status neq "0"}
+	  <a href="{$root}/cms/call/show_article/{$val.id}">显示</a><span>/</span>
+	  {else}
+	  <a href="{$root}/cms/call/hide_article/{$val.id}">隐藏</a><span>/</span>
+	  {/if}
+	  
+	  <a href="{$root}/cms/call/del_article/{$val.id}">删除</a>
+	  </td>
+    </tr>
+   {/foreach}
+
+  </tbody>
+</table>
+
+{/if}
+{if $pointer eq 'table_system'}
+<table id="example1" class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>标签名称</th>
+          <th>当前值</th>
+          <th>修改值</th>
+    
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>网站名称</td>
+          <td>蜂鸟2</td>
+          <td>
+		  <div class="form-inline">
+				<input type="text" class="form-control" placeholder="输入新的值..">
+                <button class="btn btn-info btn-sm" type="button">修改</button>
+				<span class="text-green">修改成功！</span>
+				<span class="text-red">修改失败！</span>
+		  </div>
+               
+          </td>
+      
+        </tr>
+        
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>标签名称</th>
+          <th>当前值</th>
+          <th>修改值</th>
+        </tr>
+      </tfoot>
+ </table>
+{/if}
+{if $pointer eq 'table_counter'}
+
+{/if}
+{if $pointer eq 'table_feedback'}
+
+{/if}

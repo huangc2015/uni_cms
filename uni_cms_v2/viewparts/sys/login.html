@@ -1,0 +1,84 @@
+{if $pointer eq "login"}
+<!doctype html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<title>系统登录</title>
+<link rel="stylesheet" href="{$root}/css/bootstrap.min.css">
+<link rel="stylesheet" href="{$root}/css/AdminLTE.css">
+<script src="{$root}/js/jquery.min.js"></script>
+<script>
+{literal}
+$(document).ready(function(){
+
+$("#login_in").click(function(){
+	var account = $("input[name='account']").val()
+	var password = $("input[name='password']").val()
+	var check_code = $("input[name='check_code']").val()
+	var url = $("#order").val()
+	
+	send(url,{account:account,password:password,check_code:check_code},function(e){
+		if(e.msg === "1"){
+			self.location=e.url 
+		}else{
+		
+			alert(e.msg)
+			if(e.url === "1"){
+				$("#check_box").html(e.img)
+			}
+		}
+	})
+	
+
+})
+
+$("#check_box").click(function(){
+
+send("system_login/check_code/show",{},function(e){
+	
+		$("#check_box").html(e.img)
+		
+
+})
+
+})
+
+function send(url,data,fun){
+	$.ajax({
+			type:"POST",
+			url:url,
+			dataType: "json",
+			data:data,
+			success:fun
+	})
+}
+
+})
+{/literal}
+</script>
+</head>
+<body>
+ <div class="form-box" id="login-box">
+            <div class="header">CMS系统登录</div>
+				<input id="order" type="hidden" value="{$root}/system_login/login" >
+                <div class="body bg-gray">
+                    <div class="form-group">
+                        <input type="text" name="account" class="form-control" placeholder="帐号.."/>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="password" class="form-control" placeholder="密码.."/>
+                    </div>
+					<div class="form-group form-inline text-center">
+                        <span id="check_box">{$data.check_code}</span>
+						<input type="text" name="check_code" class="form-control" placeholder="验证码.."/>
+                    </div>  
+                </div>
+                <div class="footer">
+					<br>
+                    <button id="login_in" class="btn bg-light-blue btn-block">登入</button>  
+                </div>
+          <!--  </form> -->
+        </div>
+</body>
+</html>
+{/if}

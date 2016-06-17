@@ -1,0 +1,147 @@
+{if $pointer eq 'head'}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>优理CMS管理面板v2.0</title>
+        <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+        <!-- bootstrap 3.0.2 -->
+        <link href="{$root}/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- font Awesome -->
+        <link href="{$root}/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <!-- Ionicons -->
+        <link href="{$root}/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+        <!-- Theme style -->
+        <link href="{$root}/css/AdminLTE.css" rel="stylesheet" type="text/css" />
+		
+		<link href="{$root}/css/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
+		
+         <!-- jQuery 2.0.2 -->
+        <script src="{$root}/js/jquery.min.js"></script>
+        <!-- Bootstrap -->
+        <script src="{$root}/js/bootstrap.min.js" type="text/javascript"></script>
+        <!-- AdminLTE App -->
+        <script src="{$root}/js/AdminLTE/app.js" type="text/javascript"></script>
+
+    </head>
+    <body class="skin-blue">
+
+{/if}
+{if $pointer eq 'foot'}
+	         </section><!-- /.content -->
+            </aside><!-- /.right-side -->
+        </div><!-- ./wrapper -->
+
+    </body>
+</html>
+{/if}
+{if $pointer eq 'dir'}
+
+ {foreach from=$data.tree item=val}
+				{if $val.id eq 0}
+				 <option  title="{$val.lv}" value="{$val.id}">首页</option>
+				{else}
+				 <option  title="{$val.lv}" value="{$val.id}">┣{$val.title}</option>
+				{/if}
+				
+				{if $val.son_len neq 0}
+				
+					{foreach from=$val.son item=v2}
+					 <option  title="{$v2.lv}" value="{$v2.id}">┃┗{$v2.title}</option>
+						 {if $v2.son_len neq 0}
+							{foreach from=$v2.son item=v3}
+							 <option title="{$v3.lv}" value="{$v3.id}">┃　┗{$v3.title}</option>
+							{/foreach}
+						 {/if}
+					{/foreach}
+				{/if}
+{/foreach}
+
+{/if}
+{if $pointer eq 'menu'}
+
+<div class="wrapper row-offcanvas row-offcanvas-left">
+            <!-- Left side column. contains the logo and sidebar -->
+            <aside class="left-side sidebar-offcanvas">                
+                <!-- sidebar: style can be found in sidebar.less -->
+                <section class="sidebar">
+				<ul class="sidebar-menu">
+				{foreach from=$data item=val}
+                
+                {if $val.node.Children neq ""}
+				
+					{if $r2 eq $val.url}
+						<li class="treeview active">
+					{else}
+						<li>
+					{/if}
+				{else}
+					{if $r2 eq $val.url}
+						<li class="active">
+					{else}
+						<li>
+					{/if}
+				{/if}
+                <a href="{$root}cms/{$val.url}" title="CMD:{$val.url}-Author:{$val.node.Author}-version:{$val.node.version}">
+						 <i class="fa {$val.node.icons}"></i>
+						 <span>{$val.node.MenuName} </span>
+                         {if $val.node.Children neq ""}
+						 <i class="fa fa-angle-left pull-right"></i>
+						 {/if}
+					 </a>
+                     {if $val.node.Children neq ""}
+					 <ul class="treeview-menu">
+						{foreach from=$val.node.Children item=v2}
+                        
+						{if $r3 eq $v2.url}
+							<li class="active">
+						{else}
+							<li>
+						{/if}
+							<a href="{$root}cms/{$val.url}/{$v2.url}"><i class="fa"></i> {$v2.name}</a>
+						</li>
+						{/foreach}
+                     </ul>
+					{/if}
+                </li>
+				{/foreach}
+				</ul>
+                </section>
+				<script>
+				$(function(){
+				
+				
+				})
+				</script>
+                <!-- /.sidebar -->
+            </aside>
+			<!-- Right side column. Contains the navbar and content of the page -->
+            <aside class="right-side">                
+
+                <!-- Main content -->
+                <section class="content">
+
+{/if}
+{if $pointer eq 'tip'}
+ <!-- header logo: style can be found in header.less -->
+        <header class="header">
+            <a href="{$root}/cms/Welcome" class="logo">
+              <img src="{$root}/images/sys/CMS_LOGO.png" alt="">
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">迷你菜单</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                
+				<div style="line-height:50px;color:#fff;font-size:12px;" class="navbar-right">
+				<a href="{$root}" style="color:#AFC8D6;">[前端首页]</a>&nbsp v 2.0 &nbsp;
+				<!--您的网站已经运行了0000天，累计访问量0000。-->
+				</div>
+            </nav>
+        </header>
+{/if}
