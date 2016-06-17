@@ -348,8 +348,13 @@ $("#dir").load(url,function(){
 
 var clock=setInterval(function(){
 
+//fixbug 2016-06-17 
+//getMonth() return 0-11
+//getDay() is retrun the week of day
+//getDate() is return the month of day
 var m = new Date();
-var time = m.getFullYear()+"-"+checkTime(m.getMonth())+"-"+checkTime(m.getDay())+" "+checkTime(m.getHours())+":"+checkTime(m.getMinutes())+":"+checkTime(m.getSeconds());
+var time = m.getFullYear()+"-"+checkTime(m.getMonth()+1)+"-"+checkTime(m.getDate())+" "+checkTime(m.getHours())+":"+checkTime(m.getMinutes())+":"+checkTime(m.getSeconds());
+
 
 if(action != 'edit'){
 $("#public_time,#edit_time").val(time);
