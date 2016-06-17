@@ -344,6 +344,7 @@ var url = "../../Dir_do/read_dir_list"
 
 $("#dir").load(url,function(){
 				$("#dir option").eq(0).attr("disabled",true)
+				$("#dir option").eq(1).attr("selected",true)
 			});
 
 var clock=setInterval(function(){
