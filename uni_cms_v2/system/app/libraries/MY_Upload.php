@@ -29,6 +29,11 @@
 			 * @param	array
 			 * @return	void
 			 */
+				private function my_escapeshellarg($input){
+					
+					$input = str_replace('\'', '\\\'', $input);
+					return '\''.$input.'\'';
+				}
 				public function initialize(array $config = array(), $reset = true){//error 1
 					
 					//Upload default settings.
@@ -158,7 +163,7 @@
 					 *	  due to security concerns, hence the function_exists() checks
 					 */
 					 	if(DIRECTORY_SEPARATOR !== "\\"){
-					 		$cmd = "file --brief --mime ".escapeshellarg($tmp_name)." 2>&1";
+					 		$cmd = "file --brief --mime ".$this->my_escapeshellarg($tmp_name)." 2>&1";
 							
 							if(function_exists("exec")){
 								/* This might look confusing, as $mime is being populated with all of the output when set in the second parameter.
